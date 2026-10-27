@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Color Palette Generator</title>
+  <meta name="description" content="Generate harmonious color palettes in OKLCH, check WCAG contrast, build 50-950 shade scales and export them as CSS variables, JSON, a Tailwind config or an SVG strip. Free, open source, runs in your browser.">
+  <meta name="theme-color" content="#0f172a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Color Palette Generator">
+  <meta property="og:description" content="Harmonious OKLCH palettes, WCAG contrast checks, shade scales and CSS/JSON/Tailwind/SVG exports in one free browser tool.">
+  <meta property="og:url" content="https://celaldrg.github.io/color-palette/">
+  <meta property="og:image" content="https://celaldrg.github.io/color-palette/docs/screenshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a'/%3E%3Crect x='6.5' y='6' width='5' height='20' rx='2.5' fill='%23f9a8d4'/%3E%3Crect x='13.5' y='6' width='5' height='20' rx='2.5' fill='%23c4b5fd'/%3E%3Crect x='20.5' y='6' width='5' height='20' rx='2.5' fill='%235eead4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-generate" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-13.66 5.66"/><path d="M4 12a8 8 0 0 1 13.66-5.66"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></symbol>
+    <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 7.6-1.75"/></symbol>
+    <symbol id="i-shades" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M5 9h14M5 15h14"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h.5"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></g></symbol>
+    <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m13.5 4-3 16"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a4 4 0 0 0 5.66.34l3-3a4 4 0 0 0-5.66-5.66l-1.2 1.2"/><path d="M14 10.5a4 4 0 0 0-5.66-.34l-3 3a4 4 0 0 0 5.66 5.66l1.2-1.2"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.1A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 7.5 2.9C19.5 15.4 12 20 12 20z"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M6 4h12v16.5l-6-4-6 4z"/><path d="M12 7.5v5M9.5 10h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="m8 3-4 4 4 4"/><path d="M4 7h14"/><path d="m16 21 4-4-4-4"/><path d="M20 17H6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="m6.5 7 1 13h9l1-13"/><path d="M10 11v5.5M14 11v5.5"/></symbol>
+  </svg>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <rect width="32" height="32" rx="9" fill="#1e293b"/>
+          <rect x="6.5" y="7" width="5" height="18" rx="2.5" fill="#f9a8d4"/>
+          <rect x="13.5" y="7" width="5" height="18" rx="2.5" fill="#c4b5fd"/>
+          <rect x="20.5" y="7" width="5" height="18" rx="2.5" fill="#5eead4"/>
+        </svg>
+        <h1 data-i18n="app.title">Color Palette Generator</h1>
+      </div>
+      <p class="hint" data-i18n="action.generateHint">Press Space for a new palette</p>
+      <button class="btn primary" id="generate" type="button">
+        <svg class="icon" aria-hidden="true"><use href="#i-generate"/></svg>
+        <span data-i18n="action.generate">Generate</span>
+      </button>
+      <button class="btn lang" id="lang" type="button" aria-label="TR – switch to Turkish" title="TR – switch to Turkish" data-i18n-aria="lang.toggleLabel" data-i18n-title="lang.toggleLabel">
+        <span data-i18n="lang.toggle">TR</span>
+      </button>
+    </header>
+
+    <section class="controls" aria-label="Palette settings" data-i18n-aria="controls.label">
+      <div class="field field-mode">
+        <label class="field-label" for="mode" data-i18n="harmony.label">Harmony</label>
+        <select id="mode" name="mode"></select>
+      </div>
+      <div class="field field-base">
+        <label class="field-label" for="base" data-i18n="base.label">Base color</label>
+        <div class="base-input" id="base-box">
+          <span class="base-chip is-auto" id="base-chip" aria-hidden="true"></span>
+          <input id="base" name="base" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Auto, or e.g. #3b82f6" data-i18n-placeholder="base.placeholder" aria-describedby="base-error">
+          <button class="icon-btn" id="base-clear" type="button" aria-label="Clear base color" title="Clear base color" data-i18n-aria="base.clear" data-i18n-title="base.clear">
+            <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        <p class="field-error" id="base-error" data-i18n="picker.invalid" hidden>Not a valid color</p>
+      </div>
+      <div class="field field-count">
+        <span class="field-label" id="count-label" data-i18n="count.label">Colors</span>
+        <div class="stepper" role="group" aria-labelledby="count-label">
+          <button class="icon-btn" id="count-down" type="button" aria-label="Fewer colors" title="Fewer colors" data-i18n-aria="count.decrease" data-i18n-title="count.decrease">
+            <svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg>
+          </button>
+          <output id="count" aria-live="polite">5</output>
+          <button class="icon-btn" id="count-up" type="button" aria-label="More colors" title="More colors" data-i18n-aria="count.increase" data-i18n-title="count.increase">
+            <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tools" aria-label="Tools" data-i18n-aria="tools.label">
+      <button class="btn" id="undo" type="button" disabled>
+        <svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg>
+        <span data-i18n="action.undo">Undo</span>
+      </button>
+      <button class="btn" id="contrast-tool" type="button" aria-pressed="false" aria-controls="panel">
+        <svg class="icon" aria-hidden="true"><use href="#i-contrast"/></svg>
+        <span data-i18n="tools.contrast">Contrast</span>
+      </button>
+      <button class="btn" id="export-tool" type="button" aria-haspopup="dialog">
+        <svg class="icon" aria-hidden="true"><use href="#i-code"/></svg>
+        <span data-i18n="export.title">Export</span>
+      </button>
+      <button class="btn" id="share-tool" type="button">
+        <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>
+        <span data-i18n="share.button">Share</span>
+      </button>
+      <button class="btn" id="saved-tool" type="button" aria-pressed="false" aria-controls="panel">
+        <svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg>
+        <span data-i18n="tools.saved">Saved</span>
+      </button>
+    </nav>
+
+    <main class="workspace">
+      <ol class="swatches" id="swatches" aria-label="Palette" data-i18n-aria="swatches.label"></ol>
+
+      <aside class="panel" id="panel" tabindex="-1" aria-labelledby="panel-title" hidden>
+        <div class="panel-head">
+          <h2 id="panel-title"></h2>
+          <button class="icon-btn" id="panel-close" type="button" aria-label="Close" title="Close" data-i18n-aria="dialog.close" data-i18n-title="dialog.close">
+            <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+
+        <section class="panel-view" data-view="picker" hidden>
+          <div class="picker-preview" id="picker-preview">
+            <span class="picker-hex" id="picker-hex"></span>
+            <span class="picker-name" id="picker-name"></span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="picker-input" data-i18n="picker.input">HEX, RGB, HSL, HSV or OKLCH</label>
+            <input class="input" id="picker-input" name="picker-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="picker-error">
+            <p class="field-error" id="picker-error" data-i18n="picker.invalid" hidden>Not a valid color</p>
+          </div>
+          <div class="segmented" role="group" aria-label="Color space" data-i18n-aria="picker.space">
+            <button type="button" data-space="hsl" aria-pressed="true"><span data-i18n="notation.hsl">HSL</span></button>
+            <button type="button" data-space="oklch" aria-pressed="false"><span data-i18n="notation.oklch">OKLCH</span></button>
+          </div>
+          <div class="sliders">
+            <div class="slider">
+              <div class="slider-head"><label class="slider-name" for="slider-1"></label><span class="slider-value"></span></div>
+              <input type="range" id="slider-1" name="slider-1">
+            </div>
+            <div class="slider">
+              <div class="slider-head"><label class="slider-name" for="slider-2"></label><span class="slider-value"></span></div>
+              <input type="range" id="slider-2" name="slider-2">
+            </div>
+            <div class="slider">
+              <div class="slider-head"><label class="slider-name" for="slider-3"></label><span class="slider-value"></span></div>
+              <input type="range" id="slider-3" name="slider-3">
+            </div>
+          </div>
+          <p class="note" id="picker-gamut" data-i18n="picker.gamut" hidden>Outside sRGB, so the chroma is reduced to fit</p>
+          <div class="notations">
+            <h3 class="subhead" data-i18n="picker.notations">Notations</h3>
+            <p class="hint-small" data-i18n="picker.copyHint">Click a value to copy it</p>
+            <ul class="notation-list" id="notation-list"></ul>
+          </div>
+        </section>
+
+        <section class="panel-view" data-view="contrast" hidden>
+          <div class="contrast-preview" id="contrast-preview">
+            <p class="sample-large" data-i18n="contrast.sampleShort">Aa</p>
+            <p class="sample-text" data-i18n="contrast.sample">The quick brown fox jumps over the lazy dog</p>
+            <p class="contrast-pair" id="contrast-pair"></p>
+          </div>
+          <div class="ratio">
+            <span class="ratio-label" data-i18n="contrast.ratio">Contrast ratio</span>
+            <strong class="ratio-value" id="contrast-ratio"></strong>
+          </div>
+          <table class="verdicts">
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="contrast.level">Level</th>
+                <th scope="col" data-i18n="contrast.normalText">Normal text</th>
+                <th scope="col" data-i18n="contrast.largeText">Large text</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-i18n="contrast.aa">AA</th>
+                <td><span class="badge" data-verdict="aa.normal"></span></td>
+                <td><span class="badge" data-verdict="aa.large"></span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="contrast.aaa">AAA</th>
+                <td><span class="badge" data-verdict="aaa.normal"></span></td>
+                <td><span class="badge" data-verdict="aaa.large"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="chip-field">
+            <span class="field-label" id="contrast-fg-label" data-i18n="contrast.foreground">Text</span>
+            <div class="chips" id="contrast-fg" role="group" aria-labelledby="contrast-fg-label"></div>
+          </div>
+          <div class="chip-field">
+            <span class="field-label" id="contrast-bg-label" data-i18n="contrast.background">Background</span>
+            <div class="chips" id="contrast-bg" role="group" aria-labelledby="contrast-bg-label"></div>
+          </div>
+          <button class="btn" id="contrast-swap" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-swap"/></svg>
+            <span data-i18n="contrast.swap">Swap colors</span>
+          </button>
+        </section>
+
+        <section class="panel-view" data-view="shades" hidden>
+          <p class="panel-sub" id="shades-of"></p>
+          <p class="hint-small" data-i18n="shades.hint">Click a shade to copy its HEX</p>
+          <ol class="shade-list" id="shade-list"></ol>
+        </section>
+
+        <section class="panel-view" data-view="saved" hidden>
+          <button class="btn primary wide" id="save-palette" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-save"/></svg>
+            <span data-i18n="saved.save">Save palette</span>
+          </button>
+          <p class="empty" id="saved-empty" data-i18n="saved.empty">No saved palettes yet</p>
+          <ul class="saved-list" id="saved-list"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span data-i18n="footer.license">MIT</span> ·
+      <a href="https://github.com/celaldrg/color-palette" rel="noopener" data-i18n="footer.source">Source on GitHub</a>
+    </footer>
+  </div>
+
+  <dialog class="dialog" id="export-dialog" aria-labelledby="export-title">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <h2 id="export-title" data-i18n="export.title">Export</h2>
+        <button class="icon-btn" id="export-close" type="button" aria-label="Close" title="Close" data-i18n-aria="dialog.close" data-i18n-title="dialog.close">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <div class="segmented" role="group" aria-label="Format" data-i18n-aria="export.formats">
+        <button type="button" data-format="css" aria-pressed="true"><span data-i18n="export.tab.css">CSS</span></button>
+        <button type="button" data-format="json" aria-pressed="false"><span data-i18n="export.tab.json">JSON</span></button>
+        <button type="button" data-format="tailwind" aria-pressed="false"><span data-i18n="export.tab.tailwind">Tailwind</span></button>
+        <button type="button" data-format="svg" aria-pressed="false"><span data-i18n="export.tab.svg">SVG</span></button>
+      </div>
+      <img class="export-preview" id="export-preview" alt="Preview of the SVG swatch strip" data-i18n-alt="export.previewAlt" hidden>
+      <pre class="code" id="export-code" tabindex="0"></pre>
+      <div class="dialog-actions">
+        <button class="btn primary" id="export-action" type="button">
+          <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+          <span id="export-action-label"></span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

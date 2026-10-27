@@ -1,0 +1,11 @@
+{
+  "name": "color-palette",
+  "version": "1.0.0",
+  "description": "Color palette generator in the browser: OKLCH harmonies, WCAG contrast checks, shade scales and CSS/JSON/Tailwind/SVG exports.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
