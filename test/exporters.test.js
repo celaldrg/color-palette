@@ -10,12 +10,13 @@ const COLORS = ['#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'];
 
 test('CSS custom properties, one per color with its nearest name', () => {
   const css = toCssVariables(COLORS);
+  assert.ok(css.includes('--color-1: #264653; /* darkslategray */'));
   const lines = css.split('\n');
   assert.equal(lines[0], ':root {');
   assert.equal(lines.at(-2), '}');
   assert.equal(lines.at(-1), '', 'ends with a newline');
   COLORS.forEach((hex, index) => {
-    assert.equal(lines[index + 1], `  --color-${index + 1}: ${hex}; /* ${nearestColorName(hex).name} */`);
+    assert.equal(lines[index + 1], `  --color-${index + 1}: ${hex}; /* ${nearestColorName(hex).css} */`);
   });
   assert.match(toCssVariables(COLORS, 'brand'), /--brand-5: #e76f51;/);
 });
@@ -24,12 +25,13 @@ test('JSON lists each color in several notations', () => {
   const text = toJson(COLORS);
   assert.ok(text.endsWith('}\n'));
   const { colors } = JSON.parse(text);
+  assert.equal(colors[0].name, 'darkslategray');
   assert.equal(colors.length, COLORS.length);
   colors.forEach((entry, index) => {
     const hex = COLORS[index];
     assert.deepEqual(Object.keys(entry), ['name', 'hex', 'rgb', 'hsl', 'oklch']);
     assert.equal(entry.hex, hex);
-    assert.equal(entry.name, nearestColorName(hex).name);
+    assert.equal(entry.name, nearestColorName(hex).css);
     assert.equal(entry.rgb, formatColor(hex, 'rgb'));
     assert.equal(parseColor(entry.rgb), hex);
     assert.equal(parseColor(entry.hsl), parseColor(formatColor(hex, 'hsl')));
@@ -37,7 +39,7 @@ test('JSON lists each color in several notations', () => {
   });
 });
 
-test('Tailwind colors: kebab-case names with DEFAULT and a 50-950 scale', () => {
+test('Tailwind colors: CSS keyword keys with DEFAULT and a 50-950 scale', () => {
   const colors = tailwindColors(COLORS);
   assert.equal(Object.keys(colors).length, COLORS.length);
   Object.entries(colors).forEach(([key, scale], index) => {
@@ -52,7 +54,7 @@ test('Tailwind colors: kebab-case names with DEFAULT and a 50-950 scale', () => 
     assert.ok(Object.values(scale).every((hex) => /^#[0-9a-f]{6}$/.test(hex)));
     assert.ok(SHADE_STEPS.some((step) => scale[step] === scale.DEFAULT), 'the color itself is one of the steps');
   });
-  assert.equal(Object.keys(colors)[0], 'dark-slate-gray');
+  assert.equal(Object.keys(colors)[0], 'darkslategray');
 });
 
 test('Tailwind keys get a numeric suffix when names clash', () => {

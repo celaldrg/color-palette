@@ -9,26 +9,26 @@ import { formatColor } from './notation.js';
 import { shadeScale } from './shades.js';
 
 /**
- * CSS custom properties on :root, one per color, with the nearest color name.
+ * CSS custom properties on :root, one per color, with the nearest CSS color keyword.
  * @param {string[]} colors
  * @param {string} [prefix='color'] variable name prefix: --color-1, --color-2, ...
  * @returns {string}
  */
 export function toCssVariables(colors, prefix = 'color') {
   const lines = colors.map(
-    (hex, index) => `  --${prefix}-${index + 1}: ${hex}; /* ${nearestColorName(hex).name} */`,
+    (hex, index) => `  --${prefix}-${index + 1}: ${hex}; /* ${nearestColorName(hex).css} */`,
   );
   return `:root {\n${lines.join('\n')}\n}\n`;
 }
 
 /**
- * JSON with each color's name and HEX, RGB, HSL and OKLCH notations.
+ * JSON with each color's nearest CSS keyword (name) and HEX, RGB, HSL and OKLCH notations.
  * @param {string[]} colors
  * @returns {string}
  */
 export function toJson(colors) {
   const entries = colors.map((hex) => ({
-    name: nearestColorName(hex).name,
+    name: nearestColorName(hex).css,
     hex,
     rgb: formatColor(hex, 'rgb'),
     hsl: formatColor(hex, 'hsl'),
@@ -38,7 +38,7 @@ export function toJson(colors) {
 }
 
 /**
- * Tailwind-style color entries: one key per color (kebab-case nearest name,
+ * Tailwind-style color entries: one key per color (nearest CSS color keyword,
  * suffixed -2, -3 on clashes) holding DEFAULT and the 50-950 shade scale.
  * @param {string[]} colors
  * @returns {Record<string, Record<string, string>>}
@@ -48,7 +48,7 @@ export function tailwindColors(colors) {
   for (const hex of colors) {
     const scale = { DEFAULT: hex };
     for (const shade of shadeScale(hex)) scale[shade.step] = shade.hex;
-    result[uniqueKey(result, slugify(nearestColorName(hex).name))] = scale;
+    result[uniqueKey(result, nearestColorName(hex).css)] = scale;
   }
   return result;
 }
@@ -92,10 +92,6 @@ export function toSvgStrip(colors, { width = 1000, height = 240 } = {}) {
     '</svg>',
     '',
   ].join('\n');
-}
-
-function slugify(name) {
-  return name.toLowerCase().replace(/\s+/g, '-');
 }
 
 function uniqueKey(taken, key) {
